@@ -20,7 +20,7 @@
 
 * Package Build
 ```sh
-cd PaddleScatter
+cd paddle_scatter
 python setup_ops.py install
 pip install .
 ``` 
@@ -51,7 +51,7 @@ Tensor(shape=[2, 6], dtype=int64, place=Place(gpu:0), stop_gradient=True,
 
 ```sh
 pip install pytest
-cd PaddleScatter/paddle_scatter
+cd paddle_scatter/paddle_scatter
 pytest tests
 ``` 
 
