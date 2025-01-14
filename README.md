@@ -83,19 +83,18 @@ scatter_softmax，scatter_log_softmax，scatter_logsumexp
 
 分散计算，将 `src` 按照指定的 `index` 延 `dim` 轴进行 `reduce` 规约合并。若指定 `out` 则输出到 `out`，若指定 `dim_size` 则规约后输出的 `dim` 维的维数是 `dim_size`。
 
-符号表示：
-- `src` 形状：$ (x_0, ..., x_{i-1}, x_i, x_{i+1}, ..., x_{n-1}) $
-其中 $ i $ = `dim`
-- `index` 形状：$ (x_0, ..., x_{i-1}, x_i, x_{i+1}, ..., x_{n-1}) $
-其中 $ i $ = `dim`
-- `out` 形状: $ (x_0, ..., x_{i-1}, y, x_{i+1}, ..., x_{n-1}) $
-- `index` 的值必须属于 $ \{0, 1, ..., y-1\} $，且值的顺序大小没有限制
+符号表示：  
+- `src` 形状: $(x_{0}, ..., x_{i-1}, x_{i}, x_{i+1}, ..., x_{n-1})$ 其中 $i$ = `dim`  
+- `index` 形状: $(x_0, ..., x_{i-1}, x_i, x_{i+1}, ..., x_{n-1})$ 其中 $i$ = `dim`
+- `out` 形状: $(x_0, ..., x_{i-1}, y, x_{i+1}, ..., x_{n-1})$
+- `index` 的值必须属于 $[0, 1, ..., y-1]$，且值的顺序大小没有限制
 
-此 API 对 `index` 支持广播，所以 `index` 的形状还可以是：$ (x_i, ) $ 或 $ (d_0, d_1, ..., d_{i-1}, x_i) $，其中 $ d_k (k <= i-1) $ 可以是 $ 1 $ 或 $ x_k $
+此 API 对 `index` 支持广播，所以 `index` 的形状还可以是: $(x_i,)$ 或 $(d_0, d_1, ..., d_{i-1}, x_i)$，其中 $d_k ,\quad (k <= i-1)$ 可以是 $1$ 或 $x_k$
 
-以一维情况下 `reduce = "sum"` 为例，数学计算公式为：
+以一维情况下 `reduce = "sum"` 为例，数学计算公式为：  
+
 $$
-\mathrm{out}_i = \mathrm{out}_i + \sum_{j\in\{j: \mathrm{index}_j = i\}}~\mathrm{src}_j
+\mathrm{out}_i = \mathrm{out}_i + \underset{j \in \lgroup j | \mathrm{index}_j = i \rgroup }{\sum} \mathrm{src}_j
 $$
 
 <p align="center">
@@ -145,16 +144,17 @@ print(out.shape)
 以 coordinate 的稀疏格式分段计算，将 `src` 沿 `index` 最后一维，按照 `index` 的值分组进行 `reduce` 规约合并。若指定 `out` 则输出到 `out`，若指定 `dim_size` 则规约后输出的 `dim` 维的维数是 `dim_size`。
 
 符号表示：
-- `src` 形状：$ (x_1, ..., x_{m-1}, x_m, x_{m+1}, ..., x_n) $
-- `index` 形状：$ (x_1, ..., x_{m-1}, x_m) $
-- `out` 形状: $ (x_1, ..., x_{m-1}, y, x_{m+1}, ..., x_n) $
-- `index` 的值必须属于 $ \{0, 1, ..., y-1\} $，且值的顺序必须是升序
+- `src` 形状: $(x_1, ..., x_{m-1}, x_m, x_{m+1}, ..., x_n)$
+- `index` 形状: $(x_1, ..., x_{m-1}, x_m)$
+- `out` 形状: $(x_1, ..., x_{m-1}, y, x_{m+1}, ..., x_n)$
+- `index` 的值必须属于 $[0, 1, ..., y-1]$，且值的顺序必须是升序
 
-此 API 对 `index` 支持广播，所以 `index` 的形状还可以是：$ (d_1, d_2, ..., d_{m-1}, x_m) $，其中 $ d_k (k <= m-1) $ 可以是 $ 1 $ 或 $ x_k $
+此 API 对 `index` 支持广播，所以 `index` 的形状还可以是: $(d_1, d_2, ..., d_{m-1}, x_m)$，其中 $d_k ,\quad (k <= m-1)$ 可以是 $1$ 或 $x_k$
 
-以一维情况下 `reduce = "sum"` 为例，数学计算公式为：
+以一维情况下 `reduce = "sum"` 为例，数学计算公式为：  
+
 $$
-\mathrm{out}_i = \mathrm{out}_i + \sum_{j\in\{j: \mathrm{index}_j = i\}}~\mathrm{src}_j
+\mathrm{out}_i = \mathrm{out}_i + \underset{j \in \lgroup j | \mathrm{index}_j = i \rgroup }{\sum} \mathrm{src}_j
 $$
 
 <p align="center">
@@ -192,17 +192,17 @@ print(out.shape)
 以 compressed sparse row 的稀疏格式分段计算，将 `src` 沿 `indptr` 最后一维，按照 `indptr` 指定的下标范围进行分段 `reduce` 规约合并。若指定 `out` 则输出到 `out`。
 
 符号表示：
-- `src` 形状：$ (x_1, ..., x_{m-1}, x_m, x_{m+1}, ..., x_n) $
-- `indptr` 形状：$ (x_1, ..., x_{m-1}, y) $，其中 $ y $ 的大小无限制
-- `out` 形状: $ (x_1, ..., x_{m-1}, y - 1, x_{m+1}, ..., x_n) $
-- `indptr` 的值必须属于 $ \{0, 1, ..., x_m\} $，且值的顺序必须是升序
+- `src` 形状: $(x_1, ..., x_{m-1}, x_m, x_{m+1}, ..., x_n)$
+- `indptr` 形状: $(x_1, ..., x_{m-1}, y)$，其中 $y$ 的大小无限制
+- `out` 形状: $(x_1, ..., x_{m-1}, y - 1, x_{m+1}, ..., x_n)$
+- `indptr` 的值必须属于 $[0, 1, ..., x_m]$，且值的顺序必须是升序
 
-此 API 对 `indptr` 支持广播，所以 `indptr` 的形状还可以是：$ (d_1, d_2, ..., d_{m-1}, y) $，其中 $ d_k (k <= m-1) $ 可以是 $ 1 $ 或 $ x_k $
+此 API 对 `indptr` 支持广播，所以 `indptr` 的形状还可以是: $(d_1, d_2, ..., d_{m-1}, y)$，其中 $d_k ,\quad (k <= m-1)$ 可以是 $1$ 或 $x_k$
 
-以一维情况下 `reduce = "sum"` 为例，数学计算公式为：
+以一维情况下 `reduce = "sum"` 为例，数学计算公式为：  
+
 $$
-\mathrm{out}_i =
-\sum_{j = \mathrm{indptr}[i]}^{\mathrm{indptr}[i+1]-1}~\mathrm{src}_j
+\mathrm{out}_i = \overset{{\mathrm{indptr}[i+1]-1}}{\underset{{j = \mathrm{indptr}[i]}}{\sum}} \mathrm{src}_j
 $$
 
 <p align="center">
@@ -239,16 +239,17 @@ print(out.shape)
 以 coordinate 的稀疏格式，沿着 `index` 最后一维，从 `src` 中按照 `index` 的下标值取出对应元素。若指定 `out` 则输出到 `out`。
 
 符号表示：
-- `src` 形状：$ (x_1, ..., x_{m-1}, x_m, x_{m+1}, ..., x_n) $
-- `index` 形状：$ (x_1, ..., x_{m-1}, y) $，其中 $ y $ 的大小无限制
-- `out` 形状: $ (x_1, ..., x_{m-1}, y, x_{m+1}, ..., x_n) $
-- `index` 的值必须属于 $ \{0, 1, ..., x_m - 1\} $，且值的顺序必须是升序
+- `src` 形状: $(x_1, ..., x_{m-1}, x_m, x_{m+1}, ..., x_n)$
+- `index` 形状: $(x_1, ..., x_{m-1}, y)$，其中 $y$ 的大小无限制
+- `out` 形状: $(x_1, ..., x_{m-1}, y, x_{m+1}, ..., x_n)$
+- `index` 的值必须属于 $[0, 1, ..., x_m - 1]$，且值的顺序必须是升序
 
-此 API 对 `index` 支持广播，所以 `index` 的形状还可以是：$ (d_1, d_2, ..., d_{m-1}, y) $，其中 $ d_k (k <= m-1) $ 可以是 $ 1 $ 或 $ x_k $
+此 API 对 `index` 支持广播，所以 `index` 的形状还可以是: $(d_1, d_2, ..., d_{m-1}, y)$，其中 $d_k ,\quad (k <= m-1)$ 可以是 $1$ 或 $x_k$
 
-以一维情况为例，数学计算公式为：
+以一维情况为例，数学计算公式为：  
+
 $$
-\mathrm{out}_{i} = \mathrm{src}_{\mathrm{index}_{i}}
+\mathrm{out_{i}} = \mathrm{src_{\mathrm{index}_{i}}}
 $$
 
 
@@ -281,14 +282,15 @@ Tensor(shape=[6], dtype=int64, place=Place(cpu), stop_gradient=True,
 以 compressed sparse row 的稀疏格式，沿 `indptr` 最后一维，按照 `indptr` 指定的下标范围从 `src` 中取出对应元素。若指定 `out` 则输出到 `out`。
 
 符号表示：
-- `src` 形状：$ (x_1, ..., x_{m-1}, x_m, x_{m+1}, ..., x_n) $
-- `indptr` 形状：$ (x_1, ..., x_{m-1}, y) $，其中需满足 $ y = x_m + 1 $
-- `out` 形状: $ (x_1, ..., x_{m-1}, k, x_{m+1}, ..., x_n) $，其中 $ k $ 指 `indptr` 所指示的下标分段数
-- `indptr` 的值必须属于 $ \{0, 1, ..., x_m\} $，且值的顺序必须是升序
+- `src` 形状: $(x_1, ..., x_{m-1}, x_m, x_{m+1}, ..., x_n)$
+- `indptr` 形状: $(x_1, ..., x_{m-1}, y)$，其中需满足 $y = x_m + 1$
+- `out` 形状: $(x_1, ..., x_{m-1}, k, x_{m+1}, ..., x_n)$，其中 $k$ 指 `indptr` 所指示的下标分段数
+- `indptr` 的值必须属于 $[0, 1, ..., x_m]$，且值的顺序必须是升序
 
-此 API 对 `indptr` 支持广播，所以 `indptr` 的形状还可以是：$ (d_1, d_2, ..., d_{m-1}, y) $，其中 $ d_k (k <= m-1) $ 可以是 $ 1 $ 或 $ x_k $
+此 API 对 `indptr` 支持广播，所以 `indptr` 的形状还可以是: $(d_1, d_2, ..., d_{m-1}, y)$，其中 $d_k ,\quad (k <= m-1)$ 可以是 $1$ 或 $x_k$
 
-以一维情况为例，数学计算公式为：
+以一维情况为例，数学计算公式为：  
+
 $$
 \mathrm{out}[i] = \mathrm{src}[indptr[k]]
 $$
