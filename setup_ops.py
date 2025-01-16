@@ -10,7 +10,7 @@ def get_sources():
     csrc_dir_path = os.path.join(os.path.dirname(__file__), "csrc")
     cpp_files = []
     for item in os.listdir(csrc_dir_path):
-        if paddle.core.is_compiled_with_cuda():
+        if paddle.device.is_compiled_with_cuda():
             if item.endswith(".cc") or item.endswith(".cu"):
                 cpp_files.append(os.path.join(csrc_dir_path, item))
         else:
@@ -21,7 +21,7 @@ def get_sources():
 
 def get_extensions():
     src = get_sources()
-    Extension = CUDAExtension if paddle.core.is_compiled_with_cuda() else CppExtension
+    Extension = CUDAExtension if paddle.device.is_compiled_with_cuda() else CppExtension
     ext_modules = [
         Extension(
             sources=src[1],

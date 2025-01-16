@@ -75,9 +75,9 @@ def test_forward(test, dtype, ind_dtype, place):
 
 
 @pytest.mark.skipif(
-    not paddle.core.is_compiled_with_cuda()
-    or not paddle.core.is_bfloat16_supported(device)
-    or not paddle.core.is_float16_supported(device),
+    not paddle.device.is_compiled_with_cuda()
+    or not paddle.amp.is_bfloat16_supported(device)
+    and not paddle.amp.is_float16_supported(device),
     reason="half dtype not available",
 )
 @pytest.mark.parametrize(
@@ -118,9 +118,9 @@ def test_backward(test, place):
 
 
 @pytest.mark.skipif(
-    not paddle.core.is_compiled_with_cuda()
-    or not paddle.core.is_bfloat16_supported(device)
-    or not paddle.core.is_float16_supported(device),
+    not paddle.device.is_compiled_with_cuda()
+    or not paddle.amp.is_bfloat16_supported(device)
+    and not paddle.amp.is_float16_supported(device),
     reason="half dtype not available",
 )
 @pytest.mark.parametrize("test", tests)
@@ -167,9 +167,9 @@ def test_out(test, dtype, ind_dtype, place):
 
 
 @pytest.mark.skipif(
-    not paddle.core.is_compiled_with_cuda()
-    or not paddle.core.is_bfloat16_supported(device)
-    or not paddle.core.is_float16_supported(device),
+    not paddle.device.is_compiled_with_cuda()
+    or not paddle.amp.is_bfloat16_supported(device)
+    and not paddle.amp.is_float16_supported(device),
     reason="half dtype not available",
 )
 @pytest.mark.parametrize(
@@ -226,9 +226,9 @@ def test_non_contiguous(test, dtype, ind_dtype, place):
 
 
 @pytest.mark.skipif(
-    not paddle.core.is_compiled_with_cuda()
-    or not paddle.core.is_bfloat16_supported(device)
-    or not paddle.core.is_float16_supported(device),
+    not paddle.device.is_compiled_with_cuda()
+    or not paddle.amp.is_bfloat16_supported(device)
+    and not paddle.amp.is_float16_supported(device),
     reason="half dtype not available",
 )
 @pytest.mark.parametrize(
