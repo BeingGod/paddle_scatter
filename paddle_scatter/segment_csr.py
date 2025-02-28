@@ -4,6 +4,8 @@ from typing import Tuple
 import paddle
 import paddle_scatter_ops
 
+from .utils import numel
+
 
 def segment_sum_csr(
     src: paddle.Tensor, indptr: paddle.Tensor, out: Optional[paddle.Tensor] = None
@@ -33,7 +35,7 @@ def segment_sum_csr(
     dim = len(indptr_shape) - 1
     # broadcast indptr to src
     indptr_shape[:dim] = src_shape[:dim]
-    if src.numel() == 0:
+    if numel(src) == 0:
         indptr = indptr.reshape(indptr_shape)
     else:
         indptr = indptr.expand(indptr_shape)
@@ -41,11 +43,11 @@ def segment_sum_csr(
     if out is None:
         size = src.shape
         size[dim] = max(indptr_shape[dim] - 1, 0)
-        if src.numel() == 0:
+        if numel(src) == 0:
             return paddle.zeros(size, dtype=src.dtype)
         return paddle_scatter_ops.custom_segment_csr(src, indptr, None, size, "sum")[0]
     else:
-        if src.numel() == 0:
+        if numel(src) == 0:
             return out
         result = paddle_scatter_ops.custom_segment_csr(
             src, indptr, out, out.shape, "sum"
@@ -108,7 +110,7 @@ def segment_mean_csr(
     dim = len(indptr_shape) - 1
     # broadcast indptr to src
     indptr_shape[:dim] = src_shape[:dim]
-    if src.numel() == 0:
+    if numel(src) == 0:
         indptr = indptr.reshape(indptr_shape)
     else:
         indptr = indptr.expand(indptr_shape)
@@ -116,11 +118,11 @@ def segment_mean_csr(
     if out is None:
         size = src.shape
         size[dim] = max(indptr_shape[dim] - 1, 0)
-        if src.numel() == 0:
+        if numel(src) == 0:
             return paddle.zeros(size, dtype=src.dtype)
         return paddle_scatter_ops.custom_segment_csr(src, indptr, None, size, "mean")[0]
     else:
-        if src.numel() == 0:
+        if numel(src) == 0:
             return out
         result = paddle_scatter_ops.custom_segment_csr(
             src, indptr, out, out.shape, "mean"
@@ -157,7 +159,7 @@ def segment_min_csr(
     dim = len(indptr_shape) - 1
     # broadcast indptr to src
     indptr_shape[:dim] = src_shape[:dim]
-    if src.numel() == 0:
+    if numel(src) == 0:
         indptr = indptr.reshape(indptr_shape)
     else:
         indptr = indptr.expand(indptr_shape)
@@ -165,14 +167,14 @@ def segment_min_csr(
     if out is None:
         size = src.shape
         size[dim] = max(indptr_shape[dim] - 1, 0)
-        if src.numel() == 0:
+        if numel(src) == 0:
             return (
                 paddle.zeros(size, dtype=src.dtype),
                 paddle.full(size, src.shape[dim], indptr.dtype),
             )
         return paddle_scatter_ops.custom_segment_csr(src, indptr, None, size, "min")
     else:
-        if src.numel() == 0:
+        if numel(src) == 0:
             return (out, paddle.full(size, src.shape[dim], indptr.dtype))
         result, arg_result = paddle_scatter_ops.custom_segment_csr(
             src, indptr, out, out.shape, "min"
@@ -209,7 +211,7 @@ def segment_max_csr(
     dim = len(indptr_shape) - 1
     # broadcast indptr to src
     indptr_shape[:dim] = src_shape[:dim]
-    if src.numel() == 0:
+    if numel(src) == 0:
         indptr = indptr.reshape(indptr_shape)
     else:
         indptr = indptr.expand(indptr_shape)
@@ -217,14 +219,14 @@ def segment_max_csr(
     size = src.shape
     if out is None:
         size[dim] = max(indptr_shape[dim] - 1, 0)
-        if src.numel() == 0:
+        if numel(src) == 0:
             return (
                 paddle.zeros(size, dtype=src.dtype),
                 paddle.full(size, src.shape[dim], indptr.dtype),
             )
         return paddle_scatter_ops.custom_segment_csr(src, indptr, None, size, "max")
     else:
-        if src.numel() == 0:
+        if numel(src) == 0:
             return (out, paddle.full(size, src.shape[dim], indptr.dtype))
         for i in range(len(size)):
             if i != dim:
@@ -360,7 +362,7 @@ def gather_csr(
     dim = len(indptr_shape) - 1
     # broadcast indptr to src
     indptr_shape[:dim] = src_shape[:dim]
-    if src.numel() == 0:
+    if numel(src) == 0:
         indptr = indptr.reshape(indptr_shape)
     else:
         indptr = indptr.expand(indptr_shape)
@@ -370,13 +372,13 @@ def gather_csr(
                                                            the (size of src at the same dimension) + 1."
     if out is None:
         out_size = src_shape
-        if indptr.numel() == 0:
+        if numel(indptr) == 0:
             out_size[dim] = 0
             return paddle.zeros(out_size, dtype=src.dtype)
         out_size[dim] = indptr.flatten()[-1]
         return paddle_scatter_ops.custom_gather_csr(src, indptr, None, out_size)
     else:
-        if src.numel() == 0:
+        if numel(src) == 0:
             return out
         out_size = out.shape
         for i in range(len(out_size)):

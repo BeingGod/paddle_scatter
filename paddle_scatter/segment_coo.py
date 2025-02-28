@@ -4,6 +4,8 @@ from typing import Tuple
 import paddle
 import paddle_scatter_ops
 
+from .utils import numel
+
 
 def segment_sum_coo(
     src: paddle.Tensor,
@@ -34,28 +36,28 @@ def segment_sum_coo(
     dim = len(index_shape) - 1
     # broadcast index to src
     index_shape[:dim] = src_shape[:dim]
-    if src.numel() == 0:
+    if numel(src) == 0:
         index = index.reshape(index_shape)
     else:
         index = index.expand(index_shape)
     size = src.shape
     if dim_size is not None:
         size[dim] = dim_size
-    elif index.numel() == 0:
+    elif numel(index) == 0:
         size[dim] = 0
     else:
         tmp = index.index_select(
             index=paddle.to_tensor([index.shape[dim] - 1]), axis=dim
         ).squeeze(dim)
-        tmp = tmp.max() if tmp.numel() > 1 else tmp
+        tmp = tmp.max() if numel(tmp) > 1 else tmp
         size[dim] = int(tmp) + 1
 
     if out is None:
-        if src.numel() == 0:
+        if numel(src) == 0:
             return paddle.zeros(size, dtype=src.dtype)
         return paddle_scatter_ops.custom_segment_coo(src, index, None, size, "sum")[0]
     else:
-        if src.numel() == 0:
+        if numel(src) == 0:
             return out
         for i in range(len(size)):
             if i != dim:
@@ -123,28 +125,28 @@ def segment_mean_coo(
     dim = len(index_shape) - 1
     # broadcast index to src
     index_shape[:dim] = src_shape[:dim]
-    if src.numel() == 0:
+    if numel(src) == 0:
         index = index.reshape(index_shape)
     else:
         index = index.expand(index_shape)
     size = src.shape
     if dim_size is not None:
         size[dim] = dim_size
-    elif index.numel() == 0:
+    elif numel(index) == 0:
         size[dim] = 0
     else:
         tmp = index.index_select(
             index=paddle.to_tensor([index.shape[dim] - 1]), axis=dim
         ).squeeze(dim)
-        tmp = tmp.max() if tmp.numel() > 1 else tmp
+        tmp = tmp.max() if numel(tmp) > 1 else tmp
         size[dim] = int(tmp) + 1
 
     if out is None:
-        if src.numel() == 0:
+        if numel(src) == 0:
             return paddle.zeros(size, dtype=src.dtype)
         return paddle_scatter_ops.custom_segment_coo(src, index, None, size, "mean")[0]
     else:
-        if src.numel() == 0:
+        if numel(src) == 0:
             return out
         for i in range(len(size)):
             if i != dim:
@@ -185,31 +187,31 @@ def segment_min_coo(
     dim = len(index_shape) - 1
     # broadcast index to src
     index_shape[:dim] = src_shape[:dim]
-    if src.numel() == 0:
+    if numel(src) == 0:
         index = index.reshape(index_shape)
     else:
         index = index.expand(index_shape)
     size = src.shape
     if dim_size is not None:
         size[dim] = dim_size
-    elif index.numel() == 0:
+    elif numel(index) == 0:
         size[dim] = 0
     else:
         tmp = index.index_select(
             index=paddle.to_tensor([index.shape[dim] - 1]), axis=dim
         ).squeeze(dim)
-        tmp = tmp.max() if tmp.numel() > 1 else tmp
+        tmp = tmp.max() if numel(tmp) > 1 else tmp
         size[dim] = int(tmp) + 1
 
     if out is None:
-        if src.numel() == 0:
+        if numel(src) == 0:
             return (
                 paddle.zeros(size, dtype=src.dtype),
                 paddle.full(size, src.shape[dim], index.dtype),
             )
         return paddle_scatter_ops.custom_segment_coo(src, index, None, size, "min")
     else:
-        if src.numel() == 0:
+        if numel(src) == 0:
             return (out, paddle.full(size, src.shape[dim], index.dtype))
         for i in range(len(size)):
             if i != dim:
@@ -250,31 +252,31 @@ def segment_max_coo(
     dim = len(index_shape) - 1
     # broadcast index to src
     index_shape[:dim] = src_shape[:dim]
-    if src.numel() == 0:
+    if numel(src) == 0:
         index = index.reshape(index_shape)
     else:
         index = index.expand(index_shape)
     size = src.shape
     if dim_size is not None:
         size[dim] = dim_size
-    elif index.numel() == 0:
+    elif numel(index) == 0:
         size[dim] = 0
     else:
         tmp = index.index_select(
             index=paddle.to_tensor([index.shape[dim] - 1]), axis=dim
         ).squeeze(dim)
-        tmp = tmp.max() if tmp.numel() > 1 else tmp
+        tmp = tmp.max() if numel(tmp) > 1 else tmp
         size[dim] = int(tmp) + 1
 
     if out is None:
-        if src.numel() == 0:
+        if numel(src) == 0:
             return (
                 paddle.zeros(size, dtype=src.dtype),
                 paddle.full(size, src.shape[dim], index.dtype),
             )
         return paddle_scatter_ops.custom_segment_coo(src, index, None, size, "max")
     else:
-        if src.numel() == 0:
+        if numel(src) == 0:
             return (out, paddle.full(size, src.shape[dim], index.dtype))
         for i in range(len(size)):
             if i != dim:
@@ -419,13 +421,13 @@ def gather_coo(
 
     if out is None:
         out_size = src_shape
-        if index.numel() == 0:
+        if numel(index) == 0:
             out_size[dim] = 0
             return paddle.zeros(out_size, dtype=src.dtype)
         out_size[dim] = index.shape[dim]
         return paddle_scatter_ops.custom_gather_coo(src, index, None, out_size)
     else:
-        if src.numel() == 0:
+        if numel(src) == 0:
             return out
         out_size = out.shape
         for i in range(len(out_size)):

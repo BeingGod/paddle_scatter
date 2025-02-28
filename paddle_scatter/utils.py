@@ -1,4 +1,13 @@
+from typing import Union
 import paddle
+import numpy as np
+
+
+def numel(x: paddle.Tensor) -> Union[int, paddle.Tensor]:
+    r"""Returns the number of elements in the input tensor x."""
+    if paddle.in_dynamic_mode():
+        return np.prod(x.shape) # faster than Tensor.numel()
+    return x.numel()
 
 
 def broadcast(src: paddle.Tensor, other: paddle.Tensor, dim: int) -> paddle.Tensor:
@@ -30,7 +39,7 @@ def broadcast(src: paddle.Tensor, other: paddle.Tensor, dim: int) -> paddle.Tens
             src = src.unsqueeze(0)
     for _ in range(src.dim(), other.dim()):
         src = src.unsqueeze(-1)
-    if other.numel() == 0:
+    if numel(other) == 0:
         return src.reshape(other.shape)
     src = src.expand(other.shape)
     return src

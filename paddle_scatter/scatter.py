@@ -5,6 +5,7 @@ import paddle
 import paddle_scatter_ops
 
 from .utils import broadcast
+from .utils import numel
 
 
 def scatter_sum(
@@ -38,18 +39,18 @@ def scatter_sum(
         size = src.shape
         if dim_size is not None:
             size[dim] = dim_size
-        elif index.numel() == 0:
+        elif numel(index) == 0:
             size[dim] = 0
         else:
             size[dim] = int(index.max()) + 1
         arr = paddle.zeros(size, dtype=src.dtype)
-        if src.numel() == 0:
+        if numel(src) == 0:
             return arr
         return paddle.put_along_axis(
             arr, indices=index, values=src, axis=dim, reduce="add"
         )
     else:
-        if src.numel() == 0:
+        if numel(src) == 0:
             return out
         result = paddle.put_along_axis(
             out, indices=index, values=src, axis=dim, reduce="add"
@@ -118,18 +119,18 @@ def scatter_mul(
         size = src.shape
         if dim_size is not None:
             size[dim] = dim_size
-        elif index.numel() == 0:
+        elif numel(index) == 0:
             size[dim] = 0
         else:
             size[dim] = int(index.max()) + 1
         arr = paddle.ones(size, dtype=src.dtype)
-        if src.numel() == 0:
+        if numel(src) == 0:
             return arr
         return paddle.put_along_axis(
             arr, indices=index, values=src, axis=dim, reduce="mul"
         )
     else:
-        if src.numel() == 0:
+        if numel(src) == 0:
             return out
         result = paddle.put_along_axis(
             out, indices=index, values=src, axis=dim, reduce="mul"
@@ -221,13 +222,13 @@ def scatter_min(
     size = src.shape
     if dim_size is not None:
         size[dim] = dim_size
-    elif index.numel() == 0:
+    elif numel(index) == 0:
         size[dim] = 0
     else:
         size[dim] = int(index.max()) + 1
 
     if out is None:
-        if src.numel() == 0:
+        if numel(src) == 0:
             return (
                 paddle.zeros(size, dtype=src.dtype),
                 paddle.full(size, src.shape[dim], index.dtype),
@@ -236,7 +237,7 @@ def scatter_min(
             src, index, None, size, "min", dim
         )
     else:
-        if src.numel() == 0:
+        if numel(src) == 0:
             return (out, paddle.full(size, src.shape[dim], index.dtype))
         for i in range(len(size)):
             if i != dim:
@@ -281,13 +282,13 @@ def scatter_max(
     size = src.shape
     if dim_size is not None:
         size[dim] = dim_size
-    elif index.numel() == 0:
+    elif numel(index) == 0:
         size[dim] = 0
     else:
         size[dim] = int(index.max()) + 1
 
     if out is None:
-        if src.numel() == 0:
+        if numel(src) == 0:
             return (
                 paddle.zeros(size, dtype=src.dtype),
                 paddle.full(size, src.shape[dim], index.dtype),
@@ -296,7 +297,7 @@ def scatter_max(
             src, index, None, size, "max", dim
         )
     else:
-        if src.numel() == 0:
+        if numel(src) == 0:
             return (out, paddle.full(size, src.shape[dim], index.dtype))
         for i in range(len(size)):
             if i != dim:
