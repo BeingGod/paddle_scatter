@@ -47,7 +47,7 @@ setup(
     url="https://github.com/PFCCLab/paddle_scatter",
     keywords=["paddle", "scatter", "segment", "gather"],
     python_requires=">=3.8",
-    setup_requires=install_requires,
+    install_requires=install_requires,
     extras_require={
         "test": test_requires,
     },
