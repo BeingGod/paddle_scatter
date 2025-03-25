@@ -24,8 +24,6 @@ cd paddle_scatter
 pip install -v .
 ```
 
-* Simple Example
-
 ## 测试说明
 
 ```sh
@@ -33,6 +31,8 @@ pip install pytest
 cd paddle_scatter/paddle_scatter
 pytest -v ./tests
 ```
+
+* Simple Example
 
 ```py
 import paddle
