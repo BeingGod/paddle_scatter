@@ -43,7 +43,7 @@ def scatter_sum(
             size[dim] = 0
         else:
             size[dim] = int(index.max()) + 1
-        arr = paddle.zeros(size, dtype=src.dtype)
+        arr = paddle.zeros(size, dtype=src.dtype).to(src.place)
         if numel(src) == 0:
             return arr
         return paddle.put_along_axis(
