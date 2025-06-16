@@ -60,15 +60,15 @@ Tensor(shape=[2, 6], dtype=int64, place=Place(gpu:0), stop_gradient=True,
 scatter，segment_coo，segment_csr，gather_coo，gather_csr
 
 * 二级 API：
-scatter_add，scatter_mean，scatter_mul，scatter_min，scatter_max；
-segment_sum_coo, segment_add_coo, segment_mean_coo, segment_min_coo, segment_max_coo；
-segment_sum_csr, segment_add_csr, segment_mean_csr, segment_min_csr, segment_max_csr
+       scatter_add，scatter_mean，scatter_mul，scatter_min，scatter_max;  
+       segment_sum_coo, segment_add_coo, segment_mean_coo, segment_min_coo, segment_max_coo;  
+       segment_sum_csr, segment_add_csr, segment_mean_csr, segment_min_csr, segment_max_csr
 
 * 组合 API：
 scatter_softmax，scatter_log_softmax，scatter_logsumexp
 
-* Paddle 自定义 C++ 算子以及扩展技术说明:
-自定义 C++ 算子：<https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/custom_op/new_cpp_op_cn.html>
+* Paddle 自定义 C++ 算子以及扩展技术说明:  
+自定义 C++ 算子：<https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/custom_op/new_cpp_op_cn.html>  
 自定义 C++ 扩展：<https://www.paddlepaddle.org.cn/documentation/docs/zh/guides/custom_op/cpp_extension_cn.html>
 
 ## 简要文档
