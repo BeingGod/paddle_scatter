@@ -4,6 +4,10 @@ from setuptools.command.install import install
 from setuptools.command.develop import develop
 import subprocess
 import sys
+from setup_ops import get_version
+
+
+__version__ = get_version()
 
 install_requires = []
 
@@ -41,7 +45,7 @@ class CustomDevelopCommand(develop, CustomCommand):
 
 setup(
     name="paddle_scatter",
-    version="1.0",
+    version=__version__,
     description="Paddle Extension Library of Optimized Scatter Operations, originally from https://github.com/rusty1s/pytorch_scatter",
     author="NKNaN",
     url="https://github.com/PFCCLab/paddle_scatter",

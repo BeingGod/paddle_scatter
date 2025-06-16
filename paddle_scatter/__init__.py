@@ -24,6 +24,9 @@ from .segment_csr import segment_mean_csr
 from .segment_csr import segment_min_csr
 from .segment_csr import segment_sum_csr
 
+__version__ = "2.1.2"
+
+
 __all__ = [
     "scatter_sum",
     "scatter_add",
