@@ -74,11 +74,12 @@ def get_extensions():
     return ext_modules
 
 
-setup(
-    name="paddle_scatter_ops",
-    version=__version__,
-    author="NKNaN",
-    url="https://github.com/PFCCLab/paddle_scatter",
-    description="Paddle extension of scatter and segment operators with min and max reduction methods, originally from https://github.com/rusty1s/pytorch_scatter",
-    ext_modules=get_extensions(),
-)
+if __name__ == "__main__":
+    setup(
+        name="paddle_scatter_ops",
+        version=__version__,
+        author="NKNaN",
+        url="https://github.com/PFCCLab/paddle_scatter",
+        description="Paddle extension of scatter and segment operators with min and max reduction methods, originally from https://github.com/rusty1s/pytorch_scatter",
+        ext_modules=get_extensions(),
+    )
